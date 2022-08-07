@@ -23,6 +23,15 @@ typedef struct chunk_t {
   // `code` is just an array of bytes. As we don't know how big the array needs
   // to be before a chunk is compiled, it must be dynamic.
   uint8_t* code;
+  // `lines` is an array that keeps information about what line an instruction
+  // belongs to in the front-end code. This array keeps parity with the `code`
+  // array, so that when we iterate over the codes their line number is known.
+  // TODO: This approach is memory inefficient as a series of instructions
+  // often live under the same source line. Adding a byte in memory mapping
+  // each instruction is wasteful. A better encoding would keep track of when
+  // the line changes instead. A lossless data compression that can be used
+  // for this task is called "run-length encoding".
+  int* lines;
   // `constants` will store "literal" values that we need for computation.
   // E.g., values like "3" and "4" so that operations such "3 + 4" can take
   // place. This is often called a "constant pool", because you draw constants
@@ -46,7 +55,7 @@ typedef struct chunk_t {
 
 
 void init_chunk(chunk_t* chunk);
-void write_chunk(chunk_t* chunk, uint8_t byte);
+void write_chunk(chunk_t* chunk, uint8_t byte, int line);
 void free_chunk(chunk_t* chunk);
 int add_constant(chunk_t* chunk, value_t value);
 

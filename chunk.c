@@ -13,9 +13,9 @@ void init_chunk(chunk_t* chunk) {
 }
 
 
-void write_chunk(chunk_t* chunk, uint8_t byte) {
+void write_chunk(chunk_t* chunk, uint8_t byte, int line) {
   /*
-   * In order to write a chunk, the existing `chunk_t` must verified so that
+   * In order to write a chunk, the existing `chunk_t` must be checked so that
    * its size can be analysed.
    *
    * If the capacity has almost reached maximum, i.e, if the next chunk of
@@ -23,19 +23,25 @@ void write_chunk(chunk_t* chunk, uint8_t byte) {
    * array, a detour is done to grow the array of chunks.
    *
    * Otherwise, we happily add the chunk to the next available space.
+   *
+   * Analogously, the line number from the source code is added to the struct
+   * to aid the end user in an eventual crash incident.
    */
   if (chunk->capacity < chunk->count + 1) {
     int old_capacity = chunk->capacity;
     chunk->capacity = GROW_CAPACITY(old_capacity);
     chunk->code = GROW_ARRAY(uint8_t, chunk->code, old_capacity, chunk->capacity);
+    chunk->lines = GROW_ARRAY(int, chunk->lines, old_capacity, chunk->capacity);
   }
   chunk->code[chunk->count] = byte;
+  chunk->lines[chunk->count] = line;
   chunk->count++;
 }
 
 
 void free_chunk(chunk_t* chunk) {
   FREE_ARRAY(uint8_t, chunk->code, chunk->capacity);
+  FREE_ARRAY(int, chunk->lines, chunk->capacity);
   free_value_array(&chunk->constants);
   // Call init_chunk to leave the chunk in a nice well-defined empty state.
   init_chunk(chunk);

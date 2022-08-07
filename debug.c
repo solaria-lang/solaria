@@ -14,7 +14,9 @@ void disassemble_chunk(chunk_t* chunk, const char* name) {
 
 
 int disassemble_instruction(chunk_t* chunk, int offset) {
-  printf("%04d ", offset);
+  printf("chunk_idx=%04d ", offset);
+  printf("line=%d ", chunk->lines[offset]);
+  printf("op_code=");
 
   uint8_t instruction = chunk->code[offset];
   switch (instruction) {
@@ -39,7 +41,7 @@ static int constant_instruction(const char* name, chunk_t* chunk, int offset) {
   // The constant itself for the OP_CONSTANT op_code is the next value in the
   // array of codes.
   uint8_t constant_index = chunk->code[offset + 1];
-  printf("%-16s %4d '", name, constant_index);
+  printf("%s const_idx=%d, value='", name, constant_index);
   print_value(chunk->constants.values[constant_index]);
   printf("'\n");
   return offset + 2;
