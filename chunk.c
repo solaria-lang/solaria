@@ -53,5 +53,21 @@ int add_constant(chunk_t* chunk, value_t value) {
   // return the index of the constant just added so that future reference can
   // use it.
   return chunk->constants.count - 1;
+}
 
+
+void write_constant(chunk_t* chunk, value_t value, int line) {
+  int constant_index = add_constant(chunk, value);
+  if (constant_index < MAX_OP_CONSTANT_NUM_INDEXES) {
+    write_chunk(chunk, OP_CONSTANT, line);
+    write_chunk(chunk, constant_index, line);
+  } else {
+    write_chunk(chunk, OP_CONSTANT_LONG, line);
+    // the uint32_t needs to be recast to a byte, and each byte then needs to
+    // be pushed to the chunk.
+    uint8_t* index_as_byte_array = (uint8_t*) &constant_index;
+    for (int i=0; i < 4; i++) {
+      write_chunk(chunk, index_as_byte_array[i], line);
+    }
+  }
 }

@@ -6,14 +6,24 @@
 #include "common.h"
 #include "value.h"
 
+// since OP_CONSTANT stores 1 byte-long constants, the maximum amount of indexes
+// it can hold is (2**8) = 256
+#define MAX_OP_CONSTANT_NUM_INDEXES 256
+
 // In Solaria's bytecode format, each instruction has a one-byte *operation
 // code* (sometimes shortened to just *opcode*). That one-byte code controls
 // the type of instructions we'll deal with (add, subtract, lookup, etc.)
 
 typedef enum op_code_t {
   // Instruction to produce a particular constant. This instruction accepts a 1
-  // byte operand, which specifies which constant to load from a chunk.
+  // byte operand, which specifies the index of the constant to load for a
+  // chunk. The limitation is that this 1 byte operand can only store up to 256
+  // different constants. See OP_CONSTANT_LONG for a solution for such
+  // limitation.
   OP_CONSTANT,
+  // Similar to OP_CONSTANT, but it allows for up 2**32 different constants in
+  // the chunk, instead of only 2**8 (1 byte).
+  OP_CONSTANT_LONG,
   // return from the current function.
   OP_RETURN,
 } op_code_t;
@@ -57,6 +67,7 @@ typedef struct chunk_t {
 void init_chunk(chunk_t* chunk);
 void write_chunk(chunk_t* chunk, uint8_t byte, int line);
 void free_chunk(chunk_t* chunk);
+void write_constant(chunk_t* chunk, value_t value, int line);
 int add_constant(chunk_t* chunk, value_t value);
 
 #endif

@@ -18,6 +18,10 @@
   reallocate(pointer, sizeof(type) * (old_count), 0)
 
 
+#define UINT8_POINTER_TO_UINT32(uint8_t_p) \
+  *((uint32_t*) uint8_t_p)
+
+
 void* reallocate(void* pointer, size_t old_size, size_t new_size);
 
 #endif

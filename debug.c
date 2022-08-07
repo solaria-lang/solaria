@@ -3,6 +3,7 @@
 
 #include "chunk.h"
 #include "debug.h"
+#include "memory.h"
 
 
 void disassemble_chunk(chunk_t* chunk, const char* name) {
@@ -22,6 +23,8 @@ int disassemble_instruction(chunk_t* chunk, int offset) {
   switch (instruction) {
     case OP_CONSTANT:
       return constant_instruction("OP_CONSTANT", chunk, offset);
+    case OP_CONSTANT_LONG:
+      return constant_long_instruction("OP_CONSTANT_LONG", chunk, offset);
     case OP_RETURN:
       return simple_instruction("OP_RETURN", offset);
     default:
@@ -45,4 +48,18 @@ static int constant_instruction(const char* name, chunk_t* chunk, int offset) {
   print_value(chunk->constants.values[constant_index]);
   printf("'\n");
   return offset + 2;
+}
+
+
+static int constant_long_instruction(const char* name, chunk_t* chunk, int offset) {
+  // The constant itself for the OP_CONSTANT_LONG op_code is the next value in
+  // the array of codes.
+  uint8_t* constant_index_p = &(chunk->code[offset + 1]);
+  // recast from byte to uint32.
+  uint32_t constant_index = UINT8_POINTER_TO_UINT32(constant_index_p);
+  printf("%s const_idx=%d, value='", name, constant_index);
+  print_value(chunk->constants.values[constant_index]);
+  printf("'\n");
+  // 1 byte for the operator and 4 bytes for the operation (uint32_t).
+  return offset + 5;
 }
