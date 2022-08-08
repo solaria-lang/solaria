@@ -18,5 +18,8 @@ gcc *.c -o solaria.out && ./solaria.out
 
 ## Project track
 
+- [x] Add enhancement to store large amounts of constants (OP_CONSTANT_LONG).
+- [x] Add support for keeping track of lines.
+- [x] Add ability to store constants (OP_CONSTANT).
 - [x] Add the "OP_RETURN" bytecode instruction.
 - [x] Add a skeleton for debugging and inserting bytecode instructions.
