@@ -3,6 +3,7 @@
 #include "chunk.h"
 #include "memory.h"
 #include "value.h"
+#include "lines.h"
 
 
 void init_chunk(chunk_t* chunk) {
@@ -10,6 +11,7 @@ void init_chunk(chunk_t* chunk) {
   chunk->capacity = 0;
   chunk->code = NULL;
   init_value_array(&chunk->constants);
+  init_lines(&chunk->lines);
 }
 
 
@@ -31,18 +33,17 @@ void write_chunk(chunk_t* chunk, uint8_t byte, int line) {
     int old_capacity = chunk->capacity;
     chunk->capacity = GROW_CAPACITY(old_capacity);
     chunk->code = GROW_ARRAY(uint8_t, chunk->code, old_capacity, chunk->capacity);
-    chunk->lines = GROW_ARRAY(int, chunk->lines, old_capacity, chunk->capacity);
   }
   chunk->code[chunk->count] = byte;
-  chunk->lines[chunk->count] = line;
   chunk->count++;
+  add_line(&chunk->lines, line);
 }
 
 
 void free_chunk(chunk_t* chunk) {
   FREE_ARRAY(uint8_t, chunk->code, chunk->capacity);
-  FREE_ARRAY(int, chunk->lines, chunk->capacity);
   free_value_array(&chunk->constants);
+  free_lines(&chunk->lines);
   // Call init_chunk to leave the chunk in a nice well-defined empty state.
   init_chunk(chunk);
 }

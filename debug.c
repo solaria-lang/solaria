@@ -4,6 +4,7 @@
 #include "chunk.h"
 #include "debug.h"
 #include "memory.h"
+#include "lines.h"
 
 
 void disassemble_chunk(chunk_t* chunk, const char* name) {
@@ -16,7 +17,7 @@ void disassemble_chunk(chunk_t* chunk, const char* name) {
 
 int disassemble_instruction(chunk_t* chunk, int offset) {
   printf("chunk_idx=%04d ", offset);
-  printf("line=%d ", chunk->lines[offset]);
+  printf("line=%d ", get_line_num(&chunk->lines, offset));
   printf("op_code=");
 
   uint8_t instruction = chunk->code[offset];

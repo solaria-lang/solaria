@@ -5,6 +5,7 @@
 
 #include "common.h"
 #include "value.h"
+#include "lines.h"
 
 // since OP_CONSTANT stores 1 byte-long constants, the maximum amount of indexes
 // it can hold is (2**8) = 256
@@ -41,7 +42,7 @@ typedef struct chunk_t {
   // each instruction is wasteful. A better encoding would keep track of when
   // the line changes instead. A lossless data compression that can be used
   // for this task is called "run-length encoding".
-  int* lines;
+  lines_t lines;
   // `constants` will store "literal" values that we need for computation.
   // E.g., values like "3" and "4" so that operations such "3 + 4" can take
   // place. This is often called a "constant pool", because you draw constants

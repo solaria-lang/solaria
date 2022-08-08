@@ -18,6 +18,7 @@ gcc *.c -o solaria.out && ./solaria.out
 
 ## Project track
 
+- [x] Change line number tracking approach to use run-length encoding.
 - [x] Add enhancement to store large amounts of constants (OP_CONSTANT_LONG).
 - [x] Add support for keeping track of lines.
 - [x] Add ability to store constants (OP_CONSTANT).
