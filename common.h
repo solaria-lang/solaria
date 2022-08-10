@@ -10,4 +10,8 @@
 // Some extra handy explicit-sized int types (e.g. uint8_t).
 #include <stdint.h>
 
+
+#define DEBUG_TRACE_EXECUTION
+
+
 #endif

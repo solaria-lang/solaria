@@ -25,6 +25,8 @@ typedef enum op_code_t {
   // Similar to OP_CONSTANT, but it allows for up 2**32 different constants in
   // the chunk, instead of only 2**8 (1 byte).
   OP_CONSTANT_LONG,
+  // Used for negating numbers.
+  OP_NEGATE,
   // return from the current function.
   OP_RETURN,
 } op_code_t;
