@@ -18,9 +18,16 @@ gcc *.c -o solaria.out && ./solaria.out
 
 ## Project track
 
+- [x] Add OP_NEGATE instruction.
+- [x] Add skeleton for the virtual machine code.
 - [x] Change line number tracking approach to use run-length encoding.
 - [x] Add enhancement to store large amounts of constants (OP_CONSTANT_LONG).
 - [x] Add support for keeping track of lines.
 - [x] Add ability to store constants (OP_CONSTANT).
 - [x] Add the "OP_RETURN" bytecode instruction.
 - [x] Add a skeleton for debugging and inserting bytecode instructions.
+
+## Future enhancements
+
+- [ ] Make the virtual machine stack dynamically sized (remove STACK_MAX).
+- [ ] Add OP_CONSTANT_LONG to the vm.c `run` function.
