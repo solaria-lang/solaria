@@ -27,6 +27,11 @@ typedef enum op_code_t {
   OP_CONSTANT_LONG,
   // Used for negating numbers.
   OP_NEGATE,
+  // Arithmetic operands.
+  OP_ADD,
+  OP_SUBTRACT,
+  OP_MULTIPLY,
+  OP_DIVIDE,
   // return from the current function.
   OP_RETURN,
 } op_code_t;

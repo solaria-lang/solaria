@@ -44,6 +44,15 @@ static interpret_result_t run() {
 // calls READ_BYTE, treating the result number as an index for the constants
 // array. Returns the constant value from the constant pool.
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
+// The following macro comes in a do/while block so that it can be used with
+// trailing ";" without causing problems even if inside `if` conditionals.
+#define BINARY_OP(op) \
+  do { \
+    value_t last_value = pop(); \
+    value_t first_value = pop(); \
+    push(first_value op last_value); \
+  } while(false) ;
+
   for (;;) {
 #ifdef DEBUG_TRACE_EXECUTION
     printf("        ");
@@ -68,6 +77,22 @@ static interpret_result_t run() {
         push(-pop());
         break;
       }
+      case OP_ADD: {
+        BINARY_OP(+);
+        break;
+      }
+      case OP_SUBTRACT: {
+        BINARY_OP(-);
+        break;
+      }
+      case OP_MULTIPLY: {
+        BINARY_OP(*);
+        break;
+      }
+      case OP_DIVIDE: {
+        BINARY_OP(/);
+        break;
+      }
       case OP_RETURN: {
         print_value(pop());
         printf("\n");
@@ -75,6 +100,7 @@ static interpret_result_t run() {
       }
     }
   }
+#undef BINARY_OP
 #undef READ_BYTE
 #undef READ_CONSTANT
 }

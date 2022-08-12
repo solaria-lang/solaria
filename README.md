@@ -18,6 +18,7 @@ gcc *.c -o solaria.out && ./solaria.out
 
 ## Project track
 
+- [x] Add binary ops (OP_ADD, OP_SUBTRACT, OP_MULTIPLY, OP_DIVIDE)
 - [x] Add OP_NEGATE instruction.
 - [x] Add skeleton for the virtual machine code.
 - [x] Change line number tracking approach to use run-length encoding.

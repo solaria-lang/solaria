@@ -10,10 +10,15 @@ int main(int argc, const char* argv[]) {
   chunk_t chunk;
   init_chunk(&chunk);
 
-  for (double i = 0.0; i < 10; i++) {
-    write_constant(&chunk, i, 777);
-    write_chunk(&chunk, OP_NEGATE, 777);
-  }
+  int line = 777;
+
+  // This test represents -( (1.2 + 3.4) / 5.6 ) = -0.82...
+  write_constant(&chunk, 1.2, line);
+  write_constant(&chunk, 3.4, line);
+  write_chunk(&chunk, OP_ADD, line);
+  write_constant(&chunk, 5.6, line);
+  write_chunk(&chunk, OP_DIVIDE, line);
+  write_chunk(&chunk, OP_NEGATE, line);
   write_chunk(&chunk, OP_RETURN, 777);
 
   // disassemble_chunk(&chunk, "test chunk");
