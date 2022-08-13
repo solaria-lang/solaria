@@ -8,16 +8,19 @@ void test_arithmetic_instruction_2();
 void test_arithmetic_instruction_3();
 void test_arithmetic_instruction_4();
 void test_arithmetic_instruction_5();
+void test_vm_stack_overflow();
 
 
 int main(int argc, const char* argv[]) {
   init_vm();
 
-  test_arithmetic_instruction_1(); // -0.82
-  test_arithmetic_instruction_2(); // 5
-  test_arithmetic_instruction_3(); // 9
-  test_arithmetic_instruction_4(); // 0
-  test_arithmetic_instruction_5(); // -1
+  /* test_arithmetic_instruction_1(); // -0.82 */
+  /* test_arithmetic_instruction_2(); // 5 */
+  /* test_arithmetic_instruction_3(); // 9 */
+  /* test_arithmetic_instruction_4(); // 0 */
+  /* test_arithmetic_instruction_5(); // -1 */
+
+  test_vm_stack_overflow();
 
   free_vm();
   return 0;
@@ -116,6 +119,24 @@ void test_arithmetic_instruction_5() {
   write_chunk(&chunk, OP_NEGATE, line);
   write_chunk(&chunk, OP_DIVIDE, line);
 
+  write_chunk(&chunk, OP_RETURN, line);
+
+  interpret(&chunk);
+  free_chunk(&chunk);
+}
+
+
+void test_vm_stack_overflow() {
+  // Our vm stack only supports 256 values at the moment.
+  chunk_t chunk;
+  int line = 1;
+  init_chunk(&chunk);
+
+  for (int i=0; i < 130; i++) {
+    write_constant(&chunk, 1, line);
+    write_constant(&chunk, 1, line);
+    write_chunk(&chunk, OP_SUBTRACT, line);
+  }
   write_chunk(&chunk, OP_RETURN, line);
 
   interpret(&chunk);
