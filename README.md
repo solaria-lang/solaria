@@ -18,6 +18,9 @@ gcc *.c -o solaria.out && ./solaria.out
 
 ## Project track
 
+- [x] Parse binary ops and negation in the FE.
+- [x] Add initial Pratt parsers.
+- [x] Add REPL environment.
 - [x] Add binary ops (OP_ADD, OP_SUBTRACT, OP_MULTIPLY, OP_DIVIDE)
 - [x] Add OP_NEGATE instruction.
 - [x] Add skeleton for the virtual machine code.
