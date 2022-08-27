@@ -29,6 +29,12 @@ typedef enum op_code_t {
   OP_NULL,
   OP_TRUE,
   OP_FALSE,
+  // Comparison operators.
+  OP_EQUAL,
+  OP_GREATER,
+  OP_LESS,
+  // Used for negating booleans.
+  OP_NOT,
   // Used for negating numbers.
   OP_NEGATE,
   // Arithmetic operands.

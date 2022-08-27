@@ -64,6 +64,13 @@ static value_t peek(int distance) {
 }
 
 
+static bool is_falsey(value_t value) {
+  // Implementation of falseables.
+  // `null` and `false` are falseables. Everything else is true.
+  return IS_NULL(value) || (IS_BOOL(value) && !AS_BOOL(value));
+}
+
+
 static interpret_result_t run() {
 // returns the byte currently pointed by ip and then advances the
 // instruction pointer to the next byte.
@@ -73,7 +80,7 @@ static interpret_result_t run() {
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
 // The following macro comes in a do/while block so that it can be used with
 // trailing ";" without causing problems even if inside `if` conditionals.
-#define BINARY_OP(valueType, op) \
+#define BINARY_OP(value_type, op) \
     do { \
       if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) { \
         runtime_error("Operands must be numbers."); \
@@ -81,7 +88,7 @@ static interpret_result_t run() {
       } \
       double b = AS_NUMBER(pop()); \
       double a = AS_NUMBER(pop()); \
-      push(valueType(a op b)); \
+      push(value_type(a op b)); \
     } while (false)
 
   for (;;) {
@@ -112,6 +119,20 @@ static interpret_result_t run() {
         push(BOOL_VAL(false));
         break;
       }
+      case OP_EQUAL: {
+        value_t b = pop();
+        value_t a = pop();
+        push(BOOL_VAL(values_equal(a, b)));
+        break;
+      }
+      case OP_GREATER: {
+        BINARY_OP(BOOL_VAL, >);
+        break;
+      }
+      case OP_LESS: {
+        BINARY_OP(BOOL_VAL, <);
+        break;
+      }
       case OP_NULL: {
         push(NULL_VAL);
         break;
@@ -137,6 +158,10 @@ static interpret_result_t run() {
       }
       case OP_DIVIDE: {
         BINARY_OP(NUMBER_VAL, /);
+        break;
+      }
+      case OP_NOT: {
+        push(BOOL_VAL(is_falsey(pop())));
         break;
       }
       case OP_RETURN: {
