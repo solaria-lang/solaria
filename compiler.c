@@ -153,6 +153,16 @@ static void binary() {
 }
 
 
+static void literal() {
+  switch (parser.previous.type) {
+    case TOKEN_FALSE: emit_byte(OP_FALSE); break;
+    case TOKEN_NULL: emit_byte(OP_NULL); break;
+    case TOKEN_TRUE: emit_byte(OP_TRUE); break;
+    default: return; // unreachable.
+  }
+}
+
+
 static void number() {
   double value = strtod(parser.previous.start, NULL);
   emit_constant(NUMBER_VAL(value));
@@ -203,17 +213,17 @@ parse_rule_t rules[] = {
   [TOKEN_AND]           = {NULL,     NULL,   PREC_NONE},
   [TOKEN_CLASS]         = {NULL,     NULL,   PREC_NONE},
   [TOKEN_ELSE]          = {NULL,     NULL,   PREC_NONE},
-  [TOKEN_FALSE]         = {NULL,     NULL,   PREC_NONE},
+  [TOKEN_FALSE]         = {literal,     NULL,   PREC_NONE},
   [TOKEN_FOR]           = {NULL,     NULL,   PREC_NONE},
   [TOKEN_FUNCTION]      = {NULL,     NULL,   PREC_NONE},
   [TOKEN_IF]            = {NULL,     NULL,   PREC_NONE},
-  [TOKEN_NULL]           = {NULL,     NULL,   PREC_NONE},
+  [TOKEN_NULL]           = {literal,     NULL,   PREC_NONE},
   [TOKEN_OR]            = {NULL,     NULL,   PREC_NONE},
   [TOKEN_PRINT]         = {NULL,     NULL,   PREC_NONE},
   [TOKEN_RETURN]        = {NULL,     NULL,   PREC_NONE},
   [TOKEN_SUPER]         = {NULL,     NULL,   PREC_NONE},
   [TOKEN_THIS]          = {NULL,     NULL,   PREC_NONE},
-  [TOKEN_TRUE]          = {NULL,     NULL,   PREC_NONE},
+  [TOKEN_TRUE]          = {literal,     NULL,   PREC_NONE},
   [TOKEN_VAR]           = {NULL,     NULL,   PREC_NONE},
   [TOKEN_WHILE]         = {NULL,     NULL,   PREC_NONE},
   [TOKEN_ERROR]         = {NULL,     NULL,   PREC_NONE},

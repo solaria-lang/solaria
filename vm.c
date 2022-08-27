@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include "compiler.h"
 #include "debug.h"
+#include "value.h"
 
 
 /*
@@ -103,6 +104,18 @@ static interpret_result_t run() {
         push(constant);
         break;
       };
+      case OP_TRUE: {
+        push(BOOL_VAL(true));
+        break;
+      }
+      case OP_FALSE: {
+        push(BOOL_VAL(false));
+        break;
+      }
+      case OP_NULL: {
+        push(NULL_VAL);
+        break;
+      }
       case OP_NEGATE:
         if (!IS_NUMBER(peek(0))) {
           runtime_error("Operant must be a number.");

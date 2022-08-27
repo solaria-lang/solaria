@@ -25,6 +25,10 @@ typedef enum op_code_t {
   // Similar to OP_CONSTANT, but it allows for up 2**32 different constants in
   // the chunk, instead of only 2**8 (1 byte).
   OP_CONSTANT_LONG,
+  // booleans and the null value.
+  OP_NULL,
+  OP_TRUE,
+  OP_FALSE,
   // Used for negating numbers.
   OP_NEGATE,
   // Arithmetic operands.

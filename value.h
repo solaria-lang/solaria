@@ -34,12 +34,12 @@ typedef struct value_t {
 // Note that since C99 we can use "designated initialisation" to initialise
 // structs by keywords directly, thus the use of `.boolean = value`
 #define BOOL_VAL(value) ((value_t){VAL_BOOL, {.boolean = value}})
-#define NULL_VAL(value) ((value_t){VAL_NULL, {.number = 0}})
+#define NULL_VAL ((value_t){VAL_NULL, {.number = 0}})
 #define NUMBER_VAL(value) ((value_t){VAL_NUMBER, {.number = value}})
 
 // Analogously to the above, this converts Solaria values back to C.
 // Note that there's no "AS_NULL" because VAL_NULL doesn't carry extra data.
-#define AS_BOOL(value) ((value).as.bool)
+#define AS_BOOL(value) ((value).as.boolean)
 #define AS_NUMBER(value) ((value).as.number)
 
 

@@ -139,7 +139,7 @@ static token_type_t identifier_type() {
       }
       break;
     case 'i': return check_keyword(1, 1, "f", TOKEN_IF);
-    case 'n': return check_keyword(1, 2, "il", TOKEN_NULL);
+    case 'n': return check_keyword(1, 3, "ull", TOKEN_NULL);
     case 'o': return check_keyword(1, 1, "r", TOKEN_OR);
     case 'p': return check_keyword(1, 4, "rint", TOKEN_PRINT);
     case 'r': return check_keyword(1, 5, "eturn", TOKEN_RETURN);
