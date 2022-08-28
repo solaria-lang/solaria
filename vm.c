@@ -1,7 +1,11 @@
-#include "common.h"
-#include "vm.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
+
+#include "common.h"
+#include "object.h"
+#include "memory.h"
+#include "vm.h"
 #include "compiler.h"
 #include "debug.h"
 #include "value.h"
@@ -38,10 +42,12 @@ static void runtime_error(const char* format, ...) {
 
 void init_vm() {
   reset_stack();
+  vm.objects = NULL;
 }
 
 
 void free_vm() {
+  free_objects();
 }
 
 
@@ -68,6 +74,21 @@ static bool is_falsey(value_t value) {
   // Implementation of falseables.
   // `null` and `false` are falseables. Everything else is true.
   return IS_NULL(value) || (IS_BOOL(value) && !AS_BOOL(value));
+}
+
+
+static void concatenate() {
+  obj_string_t* b = AS_STRING(pop());
+  obj_string_t* a = AS_STRING(pop());
+
+  int length = a->length + b->length;
+  char* chars = ALLOCATE(char, length + 1);
+  memcpy(chars, a->chars, a->length);
+  memcpy(chars + a->length, b->chars, b->length);
+  chars[length] = '\0';
+
+  obj_string_t* result = take_string(chars, length);
+  push(OBJ_VAL(result));
 }
 
 
@@ -145,7 +166,18 @@ static interpret_result_t run() {
         push(NUMBER_VAL(-AS_NUMBER(pop())));
         break;
       case OP_ADD: {
-        BINARY_OP(NUMBER_VAL, +);
+        if (IS_STRING(peek(0)) && IS_STRING(peek(1))) {
+          concatenate();
+        } else if (IS_NUMBER(peek(0)) && IS_NUMBER(peek(1))) {
+          double b = AS_NUMBER(pop());
+          double a = AS_NUMBER(pop());
+          push(NUMBER_VAL(a + b));
+        } else {
+          runtime_error(
+              "Operands must be two numbers or two strings."
+          );
+          return INTERPRET_RUNTIME_ERROR;
+        }
         break;
       }
       case OP_SUBTRACT: {

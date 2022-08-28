@@ -40,6 +40,8 @@ typedef struct vm_t {
    * into the stack will go".
    */
   value_t* stack_top;
+  // a pointer to the head of objects in a list.
+  obj_t* objects;
 } vm_t;
 
 
@@ -48,6 +50,9 @@ typedef enum interpret_result_t {
   INTERPRET_COMPILE_ERROR,
   INTERPRET_RUNTIME_ERROR
 } interpret_result_t;
+
+
+extern vm_t vm;
 
 
 void init_vm();

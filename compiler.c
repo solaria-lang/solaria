@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "object.h"
 #include "common.h"
 #include "compiler.h"
 #include "scanner.h"
@@ -175,6 +176,15 @@ static void number() {
 }
 
 
+static void string() {
+  emit_constant(OBJ_VAL(copy_string(
+    // +1 and -2 parts trim the leading and trailing quotation marks.
+    // -2 because " and the EOL character.
+    parser.previous.start + 1, parser.previous.length - 2
+  )));
+}
+
+
 static void grouping() {
   expression();
   consume(TOKEN_RIGHT_PAREN, "Expect ')' after expression.");
@@ -215,7 +225,7 @@ parse_rule_t rules[] = {
   [TOKEN_LESS]          = {NULL,     binary, PREC_COMPARISON},
   [TOKEN_LESS_EQUAL]    = {NULL,     binary, PREC_COMPARISON},
   [TOKEN_IDENTIFIER]    = {NULL,     NULL,   PREC_NONE},
-  [TOKEN_STRING]        = {NULL,     NULL,   PREC_NONE},
+  [TOKEN_STRING]        = {string,     NULL,   PREC_NONE},
   [TOKEN_NUMBER]        = {number,   NULL,   PREC_NONE},
   [TOKEN_AND]           = {NULL,     NULL,   PREC_NONE},
   [TOKEN_CLASS]         = {NULL,     NULL,   PREC_NONE},

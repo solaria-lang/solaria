@@ -5,11 +5,20 @@
 #include "common.h"
 
 
+// This declaration is here due to a cyclic dependency. The real definition
+// is present in `object.h`
+typedef struct obj_t obj_t;
+// Forward declaration similar to the above.
+typedef struct obj_string_t obj_string_t;
+
+
 // This value types only cover _built-in_ types. They do not cover classes.
 typedef enum value_type_t {
   VAL_BOOL,
   VAL_NULL,
   VAL_NUMBER,
+  // Solaria uses a single value type to refer to all heap-allocated types.
+  VAL_OBJ,
 } value_type_t;
 
 
@@ -20,6 +29,7 @@ typedef struct value_t {
   union {
     bool boolean;
     double number;
+    obj_t* obj;
   // `as` is used for the name of the union field because it reads nicely,
   // almost like a cast.
   } as;
@@ -29,6 +39,7 @@ typedef struct value_t {
 #define IS_BOOL(value) ((value).type == VAL_BOOL)
 #define IS_NULL(value) ((value).type == VAL_NULL)
 #define IS_NUMBER(value) ((value).type == VAL_NUMBER)
+#define IS_OBJ(value) ((value).type == VAL_OBJ)
 
 // Macros for converting a native C value to a Solaria value.
 // Note that since C99 we can use "designated initialisation" to initialise
@@ -36,11 +47,13 @@ typedef struct value_t {
 #define BOOL_VAL(value) ((value_t){VAL_BOOL, {.boolean = value}})
 #define NULL_VAL ((value_t){VAL_NULL, {.number = 0}})
 #define NUMBER_VAL(value) ((value_t){VAL_NUMBER, {.number = value}})
+#define OBJ_VAL(value) ((value_t){VAL_OBJ, {.obj = (obj_t*)value}})
 
 // Analogously to the above, this converts Solaria values back to C.
 // Note that there's no "AS_NULL" because VAL_NULL doesn't carry extra data.
 #define AS_BOOL(value) ((value).as.boolean)
 #define AS_NUMBER(value) ((value).as.number)
+#define AS_OBJ(value) ((value).as.obj)
 
 
 typedef struct value_array_t {

@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <string.h>
 
 
+#include "object.h"
 #include "memory.h"
 #include "value.h"
 
@@ -41,6 +43,9 @@ void print_value(value_t value) {
     case VAL_NUMBER:
       printf("%g", AS_NUMBER(value));
       break;
+    case VAL_OBJ:
+      print_object(value);
+      break;
   }
 }
 
@@ -51,6 +56,12 @@ bool values_equal(value_t a, value_t b) {
     case VAL_BOOL: return AS_BOOL(a) == AS_BOOL(b);
     case VAL_NULL: return true;
     case VAL_NUMBER: return AS_NUMBER(a) == AS_NUMBER(b);
+    case VAL_OBJ: {
+      obj_string_t* a_string = AS_STRING(a);
+      obj_string_t* b_string = AS_STRING(b);
+      return a_string->length == b_string->length &&
+        memcmp(a_string->chars, b_string->chars, a_string->length) == 0;
+    }
     default: return false; // Unreachable.
   }
 }
