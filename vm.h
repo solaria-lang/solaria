@@ -2,6 +2,7 @@
 #define SOLARIA_VM_H
 
 #include "chunk.h"
+#include "table.h"
 
 
 /*
@@ -42,6 +43,8 @@ typedef struct vm_t {
   value_t* stack_top;
   // a pointer to the head of objects in a list.
   obj_t* objects;
+  // A table to store all strings used.
+  table_t strings;
 } vm_t;
 
 

@@ -25,6 +25,9 @@ struct obj_string_t {
   obj_t obj;
   int length;
   char* chars;
+  // we'll cash the hash in the object, so that we don't need to generate it
+  // every time a string needs to be hashed.
+  uint32_t hash;
 };
 
 
